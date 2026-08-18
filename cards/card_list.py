@@ -21,14 +21,17 @@ def update_cards():
             d1 = card["classification"]["domain"][0]
             d2 = None
 
-        card_clean = (card["id"], card["riftbound_id"], card["name"], card["metadata"].get("clean_name",card["name"]),
-                      card["attributes"].get("energy", 0), card["attributes"].get("power", 0),
-                      card["attributes"].get("might", 0), card["classification"]["type"],
+        metadata = card.get("metadata") or {}
+        attributes = card.get("attributes") or {}
+
+        card_clean = (card["id"], card["riftbound_id"], card["name"], metadata.get("clean_name") or card["name"],
+                      attributes.get("energy") or 0, attributes.get("power") or 0,
+                      attributes.get("might") or 0, card["classification"]["type"],
                       card["classification"]["supertype"], card["classification"]["rarity"],
                       d1, d2, card["set"]["set_id"], card["set"]["label"],
                       card["media"]["image_url"], card["media"]["artist"],
-                      card["metadata"]["alternate_art"], card["metadata"]["overnumbered"],
-                      card["metadata"]["signature"])
+                      metadata.get("alternate_art") or False, metadata.get("overnumbered") or False,
+                      metadata.get("signature") or False)
         tags = card["tags"]
 
         all_cards_clean.append((card_clean, tags))

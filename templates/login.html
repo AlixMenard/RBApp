@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-[60vh]">
+    <div class="bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-2xl text-center max-w-md w-full">
+        <div class="w-20 h-20 bg-gradient-to-tr from-orange-600 to-amber-700 rounded-full mx-auto mb-6 flex items-center justify-center shadow-lg shadow-orange-600/20">
+            <span class="text-3xl">⚔️</span>
+        </div>
+        <h2 class="text-2xl font-bold text-orange-600 mb-4">Ready to Trade?</h2>
+        <p class="text-slate-400 mb-8">Join the Riftbound community and start trading your cards today.</p>
+        <div class="space-y-4">
+            <a href="/auth/login" class="block w-full bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold py-3 px-6 rounded-xl transition duration-200 flex items-center justify-center space-x-2">
+                <span>Login with Discord</span>
+            </a>
+            <div class="group relative inline-block text-xs text-slate-500 cursor-help">
+                <span class="flex items-center justify-center space-x-1 hover:text-slate-400 transition-colors">
+                    <span>Why Discord?</span>
+                    <span class="w-4 h-4 rounded-full border border-slate-600 flex items-center justify-center text-[10px]">?</span>
+                </span>
+                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-slate-800 border border-slate-700 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200 text-left z-10">
+                    <p class="text-slate-300">We only access your <span class="text-orange-400">name</span> and <span class="text-orange-400">avatar</span>. This helps other users identify you and allows us to notify you if a compatible trade match is found!</p>
+                    <div class="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-slate-800"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

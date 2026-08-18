@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="space-y-8 pb-12">
+    <div class="flex justify-between items-center">
+        <h2 class="text-3xl font-bold text-orange-600">My Trade Listings</h2>
+        <a href="/" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-lg border border-slate-700 transition-colors">Back</a>
+    </div>
+
+    <!-- Outgoing Trades (Selling/Trading away) -->
+    <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-xl overflow-hidden">
+        <div class="bg-gradient-to-r from-orange-600/20 to-orange-900/20 border-b border-slate-800 px-6 py-4">
+            <h3 class="text-xl font-semibold text-orange-600">Available</h3>
+        </div>
+        <div class="p-6">
+            {% if trades_out %}
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-slate-800">
+                    <thead>
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Card</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Quantity</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Sell</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Trade</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800">
+                        {% for trade in trades_out %}
+                        <tr class="hover:bg-slate-800/50 transition-colors" data-card-id="{{ trade[0] }}" data-type="out">
+                            <td class="px-6 py-4 flex items-center space-x-4">
+                                <img src="{{ trade[5] }}" alt="{{ trade[4] }}" class="w-12 h-16 object-cover rounded shadow-md border border-slate-700">
+                                <span class="text-slate-200 font-semibold">{{ trade[4] }}</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <input type="number" value="{{ trade[1] }}" min="0" 
+                                    class="quantity-input bg-slate-800 border border-slate-700 rounded px-3 py-1 w-20 text-slate-200 focus:ring-1 focus:ring-orange-600 outline-none">
+                            </td>
+                            <td class="px-6 py-4">
+                                <button class="toggle-btn sell-btn px-4 py-2 rounded-lg border transition-all duration-200 {{ 'bg-green-900/40 border-green-500/50 text-green-400' if trade[2] else 'bg-slate-800 border-slate-700 text-slate-500' }}" 
+                                    data-active="{{ 'true' if trade[2] else 'false' }}">
+                                    {{ 'Yes' if trade[2] else 'No' }}
+                                </button>
+                            </td>
+                            <td class="px-6 py-4">
+                                <button class="toggle-btn trade-btn px-4 py-2 rounded-lg border transition-all duration-200 {{ 'bg-cyan-900/40 border-cyan-500/50 text-cyan-400' if trade[3] else 'bg-slate-800 border-slate-700 text-slate-500' }}" 
+                                    data-active="{{ 'true' if trade[3] else 'false' }}">
+                                    {{ 'Yes' if trade[3] else 'No' }}
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-slate-500 italic text-center py-4">No outgoing trades listed.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Incoming Trades (Buying/Acquiring) -->
+    <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-xl overflow-hidden">
+        <div class="bg-gradient-to-r from-orange-600/20 to-orange-900/20 border-b border-slate-800 px-6 py-4">
+            <h3 class="text-xl font-semibold text-orange-600">Wishlist</h3>
+        </div>
+        <div class="p-6">
+            {% if trades_in %}
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-slate-800">
+                    <thead>
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Card</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Quantity</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Buy</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Trade</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800">
+                        {% for trade in trades_in %}
+                        <tr class="hover:bg-slate-800/50 transition-colors" data-card-id="{{ trade[0] }}" data-type="in">
+                            <td class="px-6 py-4 flex items-center space-x-4">
+                                <img src="{{ trade[5] }}" alt="{{ trade[4] }}" class="w-12 h-16 object-cover rounded shadow-md border border-slate-700">
+                                <span class="text-slate-200 font-semibold">{{ trade[4] }}</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <input type="number" value="{{ trade[1] }}" min="0" 
+                                    class="quantity-input bg-slate-800 border border-slate-700 rounded px-3 py-1 w-20 text-slate-200 focus:ring-1 focus:ring-orange-600 outline-none">
+                            </td>
+                            <td class="px-6 py-4">
+                                <button class="toggle-btn buy-btn px-4 py-2 rounded-lg border transition-all duration-200 {{ 'bg-green-900/40 border-green-500/50 text-green-400' if trade[2] else 'bg-slate-800 border-slate-700 text-slate-500' }}" 
+                                    data-active="{{ 'true' if trade[2] else 'false' }}">
+                                    {{ 'Yes' if trade[2] else 'No' }}
+                                </button>
+                            </td>
+                            <td class="px-6 py-4">
+                                <button class="toggle-btn trade-btn px-4 py-2 rounded-lg border transition-all duration-200 {{ 'bg-cyan-900/40 border-cyan-500/50 text-cyan-400' if trade[3] else 'bg-slate-800 border-slate-700 text-slate-500' }}" 
+                                    data-active="{{ 'true' if trade[3] else 'false' }}">
+                                    {{ 'Yes' if trade[3] else 'No' }}
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-slate-500 italic text-center py-4">No incoming trades listed.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.querySelectorAll('.quantity-input').forEach(input => {
+    input.addEventListener('change', function() {
+        updateTrade(this.closest('tr'));
+    });
+});
+
+document.querySelectorAll('.toggle-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const isActive = this.getAttribute('data-active') === 'true';
+        this.setAttribute('data-active', !isActive);
+        
+        // Update styling
+        if (!isActive) {
+            if (this.classList.contains('sell-btn') || this.classList.contains('buy-btn')) {
+                this.className = this.className.replace('bg-slate-800 border-slate-700 text-slate-500', 'bg-green-900/40 border-green-500/50 text-green-400');
+            } else {
+                this.className = this.className.replace('bg-slate-800 border-slate-700 text-slate-500', 'bg-cyan-900/40 border-cyan-500/50 text-cyan-400');
+            }
+            this.innerText = 'Yes';
+        } else {
+            if (this.classList.contains('sell-btn') || this.classList.contains('buy-btn')) {
+                this.className = this.className.replace('bg-green-900/40 border-green-500/50 text-green-400', 'bg-slate-800 border-slate-700 text-slate-500');
+            } else {
+                this.className = this.className.replace('bg-cyan-900/40 border-cyan-500/50 text-cyan-400', 'bg-slate-800 border-slate-700 text-slate-500');
+            }
+            this.innerText = 'No';
+        }
+        
+        updateTrade(this.closest('tr'));
+    });
+});
+
+function updateTrade(row) {
+    const type = row.getAttribute('data-type');
+    const cardId = row.getAttribute('data-card-id');
+    const quantity = row.querySelector('.quantity-input').value;
+    const trade = row.querySelector('.trade-btn').getAttribute('data-active');
+    
+    let url = `/trade/${type}?card_id=${cardId}&quantity=${quantity}&trade=${trade}`;
+    
+    if (type === 'out') {
+        const sell = row.querySelector('.sell-btn').getAttribute('data-active');
+        url += `&sell=${sell}`;
+    } else {
+        const buy = row.querySelector('.buy-btn').getAttribute('data-active');
+        url += `&buy=${buy}`;
+    }
+    
+    fetch(url).then(response => {
+        if (!response.ok) alert('Failed to update trade');
+    });
+}
+</script>
+{% endblock %}
