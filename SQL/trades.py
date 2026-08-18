@@ -46,7 +46,6 @@ def get_trades_in():
     result = cursor.fetchall()
     conn.close()
     return result
-
 def get_trades_out():
     conn = sqlite3.connect("database/app.db")
     cursor = conn.cursor()
@@ -54,6 +53,28 @@ def get_trades_out():
     SELECT card_id, user_id, quantity, sell, trade
     FROM trades_out
                    """)
+    result = cursor.fetchall()
+    conn.close()
+    return result
+def get_user_trades_out(user_id):
+    conn = sqlite3.connect("database/app.db")
+    cursor = conn.cursor()
+    cursor.execute("""
+    SELECT card_id, quantity, sell, trade
+    FROM trades_out
+        WHERE user_id = ?
+                   """, (user_id,))
+    result = cursor.fetchall()
+    conn.close()
+    return result
+def get_user_trades_in(user_id):
+    conn = sqlite3.connect("database/app.db")
+    cursor = conn.cursor()
+    cursor.execute("""
+    SELECT card_id, quantity, buy, trade
+    FROM trades_in
+        WHERE user_id = ?
+                   """, (user_id,))
     result = cursor.fetchall()
     conn.close()
     return result
