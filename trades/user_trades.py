@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, request, session, url_for
+from flask import Blueprint, redirect, request, session, url_for, render_template
 from SQL.trades import get_user_trades_out, get_user_trades_in
 
 user_trade_bp = Blueprint("user_trade", __name__)
@@ -24,3 +24,14 @@ def user_trade_in():
 
     result = get_user_trades_in(user_id)
     return result
+
+@user_trade_bp.route("/view")
+def view_user_trades():
+    if not "discord_id" in session or not "user_id" in session:
+        return redirect(url_for("home"))
+    
+    user_id = session.get("user_id")
+    trades_in = get_user_trades_in(user_id)
+    trades_out = get_user_trades_out(user_id)
+    
+    return render_template("user_trades.html", trades_in=trades_in, trades_out=trades_out)

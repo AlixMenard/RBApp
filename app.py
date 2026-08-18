@@ -1,4 +1,4 @@
-from flask import Flask, session, redirect, url_for, request
+from flask import Flask, session, redirect, url_for, request, render_template
 from SQL.user_data import get_avatar, get_id
 from datetime import timedelta
 import os
@@ -11,6 +11,13 @@ from Discord.OAuth import auth_bp
 from trades.trade_management import trade_bp, find_matches
 from trades.user_trades import user_trade_bp
 from cards.card_list import update_cards
+
+from apscheduler.schedulers.background import BackgroundScheduler
+scheduler = BackgroundScheduler()
+scheduler.add_job(find_matches, 'interval', minutes=120)
+scheduler.start()
+
+
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=30)
@@ -18,6 +25,12 @@ app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=30)
 @app.before_request
 def make_session_permanent():
     session.permanent = True
+
+@app.context_processor
+def inject_user_info():
+    if "discord_id" in session:
+        return dict(avatar_url=get_avatar(session["discord_id"]))
+    return dict(avatar_url=None)
 
 # Register the blueprint with a prefix (e.g. /auth/login, /auth/callback)
 app.register_blueprint(auth_bp, url_prefix="/auth")
@@ -34,11 +47,8 @@ def home():
             session["user_id"] = get_id(session["discord_id"])
 
         avatar_url = get_avatar(session["discord_id"])
-        return f'''
-            <h1>Welcome, {session["discord_name"]}</h1>
-            <img src="{avatar_url}" width="100" height="100" style="border-radius: 50%;" alt="Profile Avatar" />
-        '''
-    return '<a href="/auth/login">Log in with Discord</a>'
+        return render_template("home.html", avatar_url=avatar_url)
+    return render_template("login.html")
 
 @app.route("/admin/updatecards")
 def updatecards():

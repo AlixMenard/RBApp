@@ -40,19 +40,28 @@ def get_trades_in():
     conn = sqlite3.connect("database/app.db")
     cursor = conn.cursor()
     cursor.execute("""
-    SELECT card_id, user_id, quantity, buy, trade
-    FROM trades_in
-                   """)
+    SELECT t.card_id, t.user_id, t.quantity, t.buy, t.trade, 
+           c.clean_name, c.image_url, 
+           u.username, u.avatar, u.discord_id
+    FROM trades_in t
+    JOIN cards c ON t.card_id = c.id
+    JOIN users u ON t.user_id = u.id
+    """)
     result = cursor.fetchall()
     conn.close()
     return result
+
 def get_trades_out():
     conn = sqlite3.connect("database/app.db")
     cursor = conn.cursor()
     cursor.execute("""
-    SELECT card_id, user_id, quantity, sell, trade
-    FROM trades_out
-                   """)
+    SELECT t.card_id, t.user_id, t.quantity, t.sell, t.trade, 
+           c.clean_name, c.image_url, 
+           u.username, u.avatar, u.discord_id
+    FROM trades_out t
+    JOIN cards c ON t.card_id = c.id
+    JOIN users u ON t.user_id = u.id
+    """)
     result = cursor.fetchall()
     conn.close()
     return result
@@ -60,21 +69,24 @@ def get_user_trades_out(user_id):
     conn = sqlite3.connect("database/app.db")
     cursor = conn.cursor()
     cursor.execute("""
-    SELECT card_id, quantity, sell, trade
-    FROM trades_out
-        WHERE user_id = ?
-                   """, (user_id,))
+    SELECT t.card_id, t.quantity, t.sell, t.trade, c.clean_name, c.image_url
+    FROM trades_out t
+    JOIN cards c ON t.card_id = c.id
+    WHERE t.user_id = ?
+    """, (user_id,))
     result = cursor.fetchall()
     conn.close()
     return result
+
 def get_user_trades_in(user_id):
     conn = sqlite3.connect("database/app.db")
     cursor = conn.cursor()
     cursor.execute("""
-    SELECT card_id, quantity, buy, trade
-    FROM trades_in
-        WHERE user_id = ?
-                   """, (user_id,))
+    SELECT t.card_id, t.quantity, t.buy, t.trade, c.clean_name, c.image_url
+    FROM trades_in t
+    JOIN cards c ON t.card_id = c.id
+    WHERE t.user_id = ?
+    """, (user_id,))
     result = cursor.fetchall()
     conn.close()
     return result

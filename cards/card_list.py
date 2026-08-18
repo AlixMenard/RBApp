@@ -21,7 +21,7 @@ def update_cards():
             d1 = card["classification"]["domain"][0]
             d2 = None
 
-        card_clean = (card["id"], card["riftbound_id"], card["name"], card["metadata"].get("clean_name",""),
+        card_clean = (card["id"], card["riftbound_id"], card["name"], card["metadata"].get("clean_name",card["name"]),
                       card["attributes"].get("energy", 0), card["attributes"].get("power", 0),
                       card["attributes"].get("might", 0), card["classification"]["type"],
                       card["classification"]["supertype"], card["classification"]["rarity"],

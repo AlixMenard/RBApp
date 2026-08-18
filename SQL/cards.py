@@ -32,3 +32,10 @@ def add_cards(cards: list) -> None:
                                (card[0], tag))
 
             conn.commit()
+
+def get_image(card_id: int) -> str:
+    with sqlite3.connect('database/app.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT image_url FROM cards WHERE id = ?", (card_id,))
+        image = cursor.fetchone()[0]
+    return image
