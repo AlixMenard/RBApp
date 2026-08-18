@@ -1,4 +1,3 @@
-from Discord.OAuth import auth_bp
 from flask import Flask, session
 from SQL.user_data import get_avatar
 from datetime import timedelta
@@ -7,6 +6,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+from Discord.OAuth import auth_bp
+from cards.card_list import update_cards
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=30)
@@ -29,6 +30,12 @@ def home():
         '''
     return '<a href="/auth/login">Log in with Discord</a>'
 
+@app.route("/admin/updatecards")
+def updatecards():
+    pw = request.args.get("password")
+    if pw is None or pw != os.getenv("ADMIN_PASSWORD"):
+        return
+    update_cards()
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
