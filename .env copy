@@ -1,1 +1,4 @@
 SECRET_KEY = secret_key
+DS_CLIENT_ID = discord client id
+DS_CLIENT_SECRET = discord client secret
+ADMIN_PASSWORD = admin password
