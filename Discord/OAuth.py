@@ -12,7 +12,7 @@ auth_bp = Blueprint("auth", __name__)
 
 DISCORD_CLIENT_ID = os.getenv("DS_CLIENT_ID")
 DISCORD_CLIENT_SECRET = os.getenv("DS_CLIENT_SECRET")
-DISCORD_REDIRECT_URI = "http://localhost:5000/auth/callback"
+DISCORD_REDIRECT_URI = "http://192.168.129.76:5000/auth/callback"
 DISCORD_API_URL = "https://discord.com/api/v10"
 
 
