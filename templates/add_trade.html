@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex justify-between items-center">
+        <h2 class="text-3xl font-bold text-orange-600">Add Cards to Trade</h2>
+        <a href="/user_trade/view" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-lg border border-slate-700 transition-colors">My Trades</a>
+    </div>
+
+    <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-xl overflow-hidden p-6">
+        <div class="mb-6">
+            <input type="text" id="cardSearch" placeholder="Search cards..." class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-slate-200 focus:ring-2 focus:ring-orange-600 outline-none transition-all">
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4" id="cardGrid">
+            {% for card in cards %}
+            <div class="card-item bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-lg hover:shadow-orange-500/10 transition-all group" data-name="{{ card[2]|lower }}">
+                <div class="relative aspect-[3/4]">
+                    <img src="{{ card[4] }}" alt="{{ card[1] }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900 to-transparent p-3">
+                        <h3 class="text-slate-100 font-bold truncate text-sm">{{ card[1] }}</h3>
+                        <p class="text-[10px] text-slate-400 uppercase tracking-wider">{{ card[3] }}</p>
+                    </div>
+                </div>
+                <div class="p-2 grid grid-cols-1 gap-2">
+                    <button onclick="addCard(event, '{{ card[0] }}', 'out')" class="bg-orange-600 hover:bg-orange-500 text-white text-[10px] font-bold py-1.5 px-1 rounded transition-colors">
+                        + Available
+                    </button>
+                    <button onclick="addCard(event, '{{ card[0] }}', 'in')" class="bg-cyan-600 hover:bg-cyan-500 text-white text-[10px] font-bold py-1.5 px-1 rounded transition-colors">
+                        + Wishlist
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('cardSearch').addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    document.querySelectorAll('.card-item').forEach(item => {
+        const name = item.getAttribute('data-name');
+        if (name.includes(searchTerm)) {
+            item.style.display = 'block';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+});
+
+function addCard(event, cardId, type) {
+    const btn = event.currentTarget;
+    const url = `/trade/${type}?card_id=${cardId}&quantity=1&trade=true&${type === 'out' ? 'sell' : 'buy'}=true`;
+    
+    fetch(url).then(response => {
+        if (response.ok) {
+            const originalText = btn.innerText;
+            btn.innerText = 'Added!';
+            const originalClass = type === 'out' ? 'bg-orange-600' : 'bg-cyan-600';
+            const hoverClass = type === 'out' ? 'hover:bg-orange-500' : 'hover:bg-cyan-500';
+            
+            btn.classList.remove(originalClass, hoverClass);
+            btn.classList.add('bg-green-600');
+            
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.classList.remove('bg-green-600');
+                btn.classList.add(originalClass, hoverClass);
+            }, 2000);
+        } else {
+            alert('Failed to add card');
+        }
+    });
+}
+</script>
+{% endblock %}
