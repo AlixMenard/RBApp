@@ -1,5 +1,4 @@
 import sqlite3
-import requests
 
 def save_or_update_user(discord_user):
     conn = sqlite3.connect("database/app.db")
@@ -44,6 +43,25 @@ def get_avatar(discord_id: str):
 
     return get_avatar_url(discord_id, avatar_hash)
 
+def get_id(discord_id: str):
+    conn = sqlite3.connect("database/app.db")
+    cursor = conn.cursor()
+
+    # Create users table
+    cursor.execute(
+        """
+        SELECT id
+        FROM users
+        WHERE discord_id = (?)
+    """,
+    (discord_id,)
+    )
+    user_id = cursor.fetchone()[0]
+
+    conn.commit()
+    conn.close()
+
+    return user_id
 
 def get_avatar_url(discord_id: str, avatar_hash: str) -> str:
     if avatar_hash:
