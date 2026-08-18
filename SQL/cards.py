@@ -39,3 +39,10 @@ def get_image(card_id: int) -> str:
         cursor.execute("SELECT image_url FROM cards WHERE id = ?", (card_id,))
         image = cursor.fetchone()[0]
     return image
+
+def get_cards():
+    with sqlite3.connect('database/app.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, name, clean_name, rarity, image_url FROM cards")
+        cards = cursor.fetchall()
+    return cards

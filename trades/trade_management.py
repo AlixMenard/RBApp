@@ -1,5 +1,6 @@
 from flask import Blueprint, redirect, request, session, url_for, render_template
-from SQL.trades import add_trade_out, add_trade_in, get_trades_in, get_trades_out
+from SQL.trades import add_trade_out, add_trade_in, get_trades_in, get_trades_out, remove_trade_in, remove_trade_out
+from SQL.cards import get_cards
 from SQL.user_data import get_avatar_url
 from collections import defaultdict
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -43,6 +44,32 @@ def trade_in():
 
     add_trade_in((card_id, user_id, quantity, buy, trade))
     return "success"
+
+@trade_bp.route("/remove")
+def remove_trade():
+    if not "discord_id" in session or not "user_id" in session:
+        return redirect(url_for("home"))
+    
+    card_id = request.args.get("card_id")
+    user_id = session.get("user_id")
+    trade_type = request.args.get("type")
+
+    if trade_type == "in":
+        remove_trade_in(card_id, user_id)
+    elif trade_type == "out":
+        remove_trade_out(card_id, user_id)
+    else:
+        return "error", 400
+    
+    return "success"
+
+@trade_bp.route("/add")
+def add_trade_page():
+    if not "discord_id" in session or not "user_id" in session:
+        return redirect(url_for("home"))
+    
+    cards = get_cards()
+    return render_template("add_trade.html", cards=cards)
 
 def find_matches():
     trades_in = get_trades_in()

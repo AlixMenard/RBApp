@@ -90,3 +90,17 @@ def get_user_trades_in(user_id):
     result = cursor.fetchall()
     conn.close()
     return result
+
+def remove_trade_in(card_id, user_id):
+    conn = sqlite3.connect("database/app.db")
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM trades_in WHERE card_id = ? AND user_id = ?", (card_id, user_id))
+    conn.commit()
+    conn.close()
+
+def remove_trade_out(card_id, user_id):
+    conn = sqlite3.connect("database/app.db")
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM trades_out WHERE card_id = ? AND user_id = ?", (card_id, user_id))
+    conn.commit()
+    conn.close()
