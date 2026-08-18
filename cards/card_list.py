@@ -55,8 +55,9 @@ def update_cards():
                       card["classification"]["supertype"], card["classification"]["rarity"],
                       d1, d2, card["set"]["set_id"], card["set"]["label"],
                       card["media"]["image_url"], card["media"]["artist"],
-                      metadata.get("alternate_art") or False, metadata.get("overnumbered") or False,
-                      metadata.get("signature") or False)
+                      metadata.get("alternate_art") or False, (metadata.get("overnumbered") or False) or (metadata.get("signature") or False),
+                      metadata.get("signature") or False,
+                      0)
         tags = card["tags"]
 
         all_cards_clean.append((card_clean, tags))

@@ -25,7 +25,8 @@ def init_cards():
             artist TEXT NOT NULL,
             alt BOOLEAN NOT NULL,
             ovn BOOLEAN NOT NULL,
-            signed BOOLEAN NOT NULL
+            signed BOOLEAN NOT NULL,
+            price FLOAT NOT NULL
         )
     """
     )

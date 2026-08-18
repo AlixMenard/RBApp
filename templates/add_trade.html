@@ -8,20 +8,102 @@
     </div>
 
     <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-xl overflow-hidden p-6">
-        <div class="mb-6">
-            <input type="text" id="cardSearch" placeholder="Search cards..." class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-slate-200 focus:ring-2 focus:ring-orange-600 outline-none transition-all">
+        <div class="mb-6 space-y-4">
+            <div class="flex gap-4">
+                <input type="text" id="cardSearch" placeholder="Search cards..." class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-slate-200 focus:ring-2 focus:ring-orange-600 outline-none transition-all">
+            </div>
+
+            <div class="flex flex-wrap gap-6 items-center bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
+                <!-- Domains -->
+                <div class="space-y-2">
+                    <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Domains</p>
+                    <div class="flex flex-wrap gap-2" id="domainFilters">
+                        {% for d in ['fury', 'calm', 'mind', 'body', 'chaos', 'order', 'colorless'] %}
+                        <button data-value="{{ d|capitalize }}" class="filter-btn p-1.5 rounded-lg border border-slate-700 bg-slate-900/50 hover:bg-slate-700 transition-all" title="{{ d|capitalize }}">
+                            <img src="/assets/{{ 'body.webp' if d == 'body' else 'domain_' + d + '.webp' }}" class="w-5 h-5 grayscale opacity-40 transition-all pointer-events-none">
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Types -->
+                <div class="space-y-2">
+                    <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Types</p>
+                    <div class="flex flex-wrap gap-2" id="typeFilters">
+                        {% for t in ['unit', 'spell', 'gear', 'battlefield', 'legend', 'rune'] %}
+                        <button data-value="{{ t|capitalize }}" class="filter-btn p-1.5 rounded-lg border border-slate-700 bg-slate-900/50 hover:bg-slate-700 transition-all" title="{{ t|capitalize }}">
+                            <img src="/assets/type_{{ t }}.svg" class="w-5 h-5 grayscale opacity-40 transition-all pointer-events-none">
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Metadata -->
+                <div class="space-y-2">
+                    <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Flags</p>
+                    <div class="flex gap-4 text-slate-400 text-xs font-bold pt-1">
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-orange-500 transition-colors">
+                            <input type="checkbox" id="altCheck" class="filter-checkbox form-checkbox bg-slate-900 border-slate-700 rounded text-orange-600 focus:ring-orange-600">
+                            ALT
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-purple-400 transition-colors">
+                            <input type="checkbox" id="ovnCheck" class="filter-checkbox form-checkbox bg-slate-900 border-slate-700 rounded text-purple-600 focus:ring-purple-600">
+                            OVN
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-cyan-400 transition-colors">
+                            <input type="checkbox" id="signedCheck" class="filter-checkbox form-checkbox bg-slate-900 border-slate-700 rounded text-cyan-600 focus:ring-cyan-600">
+                            SIGN
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Sets -->
+                <div class="space-y-2 flex-1 min-w-[200px]">
+                    <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Sets</p>
+                    <div class="flex flex-wrap gap-2" id="setFilters">
+                        {% for s in sets %}
+                        <button data-value="{{ s }}" class="filter-btn px-2 py-1 text-[10px] rounded-lg border border-slate-700 bg-slate-900/50 hover:bg-slate-700 text-slate-400 transition-all">
+                            {{ s }}
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4" id="cardGrid">
             {% for card in cards %}
-            <div class="card-item bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-lg hover:shadow-orange-500/10 transition-all group" data-name="{{ card[2]|lower }}">
+            <div class="card-item bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-lg hover:shadow-orange-500/10 transition-all group">
                 <div class="relative aspect-[3/4]">
                     <img src="{{ card[4] }}" alt="{{ card[1] }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                     <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900 to-transparent p-3">
                         <h3 class="text-slate-100 font-bold truncate text-sm">{{ card[1] }}</h3>
-                        <p class="text-[10px] text-slate-400 uppercase tracking-wider">{{ card[3] }}</p>
                     </div>
                 </div>
+                
+                <div class="bg-slate-900/50 p-2 text-[10px] space-y-1.5 border-b border-slate-700/50">
+                    <div class="flex justify-between items-center text-slate-400 uppercase tracking-wider font-semibold">
+                        <span>{{ card[3] }}</span>
+                        <span>{{ card[5] }}{% if card[6] %} / {{ card[6] }}{% endif %}</span>
+                    </div>
+                    <div class="flex justify-between items-center text-[9px] font-bold">
+                        <span class="text-orange-500">${{ "%.2f"|format(card[11]) }}</span>
+                        <span class="text-slate-500 truncate ml-2" title="{{ card[12] }}">{{ card[12] }}</span>
+                    </div>
+                    {% if card[10] %}
+                    <div class="flex flex-wrap gap-1">
+                        {% for tag in card[10].split(',') %}
+                        <span class="bg-slate-800 text-slate-300 px-1 rounded-sm border border-slate-700">{{ tag }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <div class="flex gap-2 text-[9px] font-bold">
+                        {% if card[7] %}<span class="text-orange-500">ALT</span>{% endif %}
+                        {% if card[8] %}<span class="text-purple-400">OVN</span>{% endif %}
+                        {% if card[9] %}<span class="text-cyan-400">SIGN</span>{% endif %}
+                    </div>
+                </div>
+
                 <div class="p-2 grid grid-cols-1 gap-2">
                     <button onclick="addCard(event, '{{ card[0] }}', 'out')" class="bg-orange-600 hover:bg-orange-500 text-white text-[10px] font-bold py-1.5 px-1 rounded transition-colors">
                         + Available
@@ -37,17 +119,116 @@
 </div>
 
 <script>
-document.getElementById('cardSearch').addEventListener('input', function(e) {
-    const searchTerm = e.target.value.toLowerCase();
-    document.querySelectorAll('.card-item').forEach(item => {
-        const name = item.getAttribute('data-name');
-        if (name.includes(searchTerm)) {
-            item.style.display = 'block';
+const activeDomains = new Set();
+const activeTypes = new Set();
+const activeSets = new Set();
+
+function triggerSearch() {
+    const searchTerm = document.getElementById('cardSearch').value;
+    const alt = document.getElementById('altCheck').checked;
+    const ovn = document.getElementById('ovnCheck').checked;
+    const signed = document.getElementById('signedCheck').checked;
+    
+    let url = `/trade/search?q=${encodeURIComponent(searchTerm)}`;
+    activeDomains.forEach(d => url += `&domains=${encodeURIComponent(d)}`);
+    activeTypes.forEach(t => url += `&type=${encodeURIComponent(t)}`);
+    activeSets.forEach(s => url += `&sets=${encodeURIComponent(s)}`);
+    if (alt) url += `&alt=true`;
+    if (ovn) url += `&ovn=true`;
+    if (signed) url += `&signed=true`;
+
+    clearTimeout(window.searchTimeout);
+    window.searchTimeout = setTimeout(() => {
+        fetch(url)
+            .then(response => response.json())
+            .then(cards => {
+                const grid = document.getElementById('cardGrid');
+                grid.innerHTML = '';
+                cards.forEach(card => {
+                    const cardDiv = document.createElement('div');
+                    cardDiv.className = 'card-item bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-lg hover:shadow-orange-500/10 transition-all group';
+                    
+                    const tagsHtml = card.tags.length > 0 
+                        ? `<div class="flex flex-wrap gap-1">
+                            ${card.tags.map(tag => `<span class="bg-slate-800 text-slate-300 px-1 rounded-sm border border-slate-700">${tag}</span>`).join('')}
+                           </div>`
+                        : '';
+                        
+                    const metadataHtml = `<div class="flex gap-2 text-[9px] font-bold">
+                            ${card.alt ? '<span class="text-orange-500">ALT</span>' : ''}
+                            ${card.ovn ? '<span class="text-purple-400">OVN</span>' : ''}
+                            ${card.signed ? '<span class="text-cyan-400">SIGN</span>' : ''}
+                        </div>`;
+
+                    const priceAndSetHtml = `<div class="flex justify-between items-center text-[9px] font-bold">
+                            <span class="text-orange-500">$${parseFloat(card.price).toFixed(2)}</span>
+                            <span class="text-slate-500 truncate ml-2" title="${card.set_name}">${card.set_name}</span>
+                        </div>`;
+
+                    cardDiv.innerHTML = `
+                        <div class="relative aspect-[3/4]">
+                            <img src="${card.image_url}" alt="${card.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900 to-transparent p-3">
+                                <h3 class="text-slate-100 font-bold truncate text-sm">${card.name}</h3>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-slate-900/50 p-2 text-[10px] space-y-1.5 border-b border-slate-700/50">
+                            <div class="flex justify-between items-center text-slate-400 uppercase tracking-wider font-semibold">
+                                <span>${card.rarity}</span>
+                                <span>${card.domain1}${card.domain2 ? ' / ' + card.domain2 : ''}</span>
+                            </div>
+                            ${priceAndSetHtml}
+                            ${tagsHtml}
+                            ${metadataHtml}
+                        </div>
+
+                        <div class="p-2 grid grid-cols-1 gap-2">
+                            <button onclick="addCard(event, '${card.id}', 'out')" class="bg-orange-600 hover:bg-orange-500 text-white text-[10px] font-bold py-1.5 px-1 rounded transition-colors">
+                                + Available
+                            </button>
+                            <button onclick="addCard(event, '${card.id}', 'in')" class="bg-cyan-600 hover:bg-cyan-500 text-white text-[10px] font-bold py-1.5 px-1 rounded transition-colors">
+                                + Wishlist
+                            </button>
+                        </div>
+                    `;
+                    grid.appendChild(cardDiv);
+                });
+            });
+    }, 300);
+}
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const value = this.getAttribute('data-value');
+        const parent = this.parentElement.id;
+        let targetSet;
+        if (parent === 'domainFilters') targetSet = activeDomains;
+        else if (parent === 'typeFilters') targetSet = activeTypes;
+        else if (parent === 'setFilters') targetSet = activeSets;
+        
+        if (targetSet.has(value)) {
+            targetSet.delete(value);
+            this.classList.remove('bg-orange-600/20', 'border-orange-600');
+            const img = this.querySelector('img');
+            if (img) img.classList.add('grayscale', 'opacity-40');
+            else this.classList.remove('text-orange-500');
         } else {
-            item.style.display = 'none';
+            targetSet.add(value);
+            this.classList.add('bg-orange-600/20', 'border-orange-600');
+            const img = this.querySelector('img');
+            if (img) img.classList.remove('grayscale', 'opacity-40');
+            else this.classList.add('text-orange-500');
         }
+        triggerSearch();
     });
 });
+
+document.querySelectorAll('.filter-checkbox').forEach(cb => {
+    cb.addEventListener('change', triggerSearch);
+});
+
+document.getElementById('cardSearch').addEventListener('input', triggerSearch);
 
 function addCard(event, cardId, type) {
     const btn = event.currentTarget;

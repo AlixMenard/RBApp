@@ -1,6 +1,6 @@
-from flask import Blueprint, redirect, request, session, url_for, render_template
+from flask import Blueprint, redirect, request, session, url_for, render_template, jsonify
 from SQL.trades import add_trade_out, add_trade_in, get_trades_in, get_trades_out, remove_trade_in, remove_trade_out
-from SQL.cards import get_cards
+from SQL.cards import get_cards, search_cards, get_sets
 from SQL.user_data import get_avatar_url
 from collections import defaultdict
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -63,13 +63,38 @@ def remove_trade():
     
     return "success"
 
+@trade_bp.route("/search")
+def search_cards_route():
+    args = request.args
+    cards = search_cards(args)
+    # Convert list of tuples to list of dicts for JSON
+    card_list = []
+    for card in cards:
+        card_list.append({
+            "id": card[0],
+            "name": card[1],
+            "clean_name": card[2],
+            "rarity": card[3],
+            "image_url": card[4],
+            "domain1": card[5],
+            "domain2": card[6],
+            "alt": bool(card[7]),
+            "ovn": bool(card[8]),
+            "signed": bool(card[9]),
+            "tags": card[10].split(",") if card[10] else [],
+            "price": card[11],
+            "set_name": card[12]
+        })
+    return jsonify(card_list)
+
 @trade_bp.route("/add")
 def add_trade_page():
     if not "discord_id" in session or not "user_id" in session:
         return redirect(url_for("home"))
     
     cards = get_cards()
-    return render_template("add_trade.html", cards=cards)
+    sets = get_sets()
+    return render_template("add_trade.html", cards=cards, sets=sets)
 
 def find_matches():
     trades_in = get_trades_in()

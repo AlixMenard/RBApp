@@ -1,4 +1,4 @@
-from flask import Flask, session, redirect, url_for, request, render_template
+from flask import Flask, session, redirect, url_for, request, render_template, send_from_directory
 from SQL.user_data import get_avatar, get_id
 from datetime import timedelta
 import os
@@ -21,6 +21,10 @@ scheduler.start()
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=30)
+
+@app.route('/assets/<path:filename>')
+def serve_assets(filename):
+    return send_from_directory('assets', filename)
 
 @app.before_request
 def make_session_permanent():
