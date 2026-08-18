@@ -4,7 +4,7 @@ def add_tags(tags: list):
     with sqlite3.connect('database/app.db') as conn:
         cursor = conn.cursor()
         for tag in tags:
-            cursor.execute("INSERT INTO tags (name) VALUES (?)", (tag,))
+            cursor.execute("INSERT OR IGNORE INTO tags (name) VALUES (?)", (tag,))
             conn.commit()
 
         cursor.execute("SELECT * FROM tags")

@@ -8,7 +8,7 @@ def init_cards():
         """
         CREATE TABLE IF NOT EXISTS cards (
             id TEXT PRIMARY KEY,
-            riftbound_id TEXT,
+            riftbound_id TEXT UNIQUE,
             name TEXT NOT NULL,
             clean_name TEXT,
             energy INTEGER,
@@ -45,7 +45,7 @@ def init_tags():
         CREATE TABLE IF NOT EXISTS tags
         (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL
+            name TEXT NOT NULL UNIQUE
         )
         """
     )

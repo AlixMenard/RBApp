@@ -7,13 +7,38 @@ from tqdm import tqdm
 
 def update_cards():
 
+    delete_table("card_tags")
+    delete_table("tags")
     delete_table("cards")
     init_cards()
 
     all_cards = get_cards()
 
+    # Deduplicate by riftbound_id, prioritizing standard versions
+    deduplicated_cards = {}
+    for card in all_cards:
+        rb_id = card.get("riftbound_id")
+        if not rb_id:
+            continue
+
+        metadata = card.get("metadata") or {}
+        is_alt = metadata.get("alternate_art") or False
+        is_ovn = metadata.get("overnumbered") or False
+        is_signed = metadata.get("signature") or False
+
+        # Priority: prefer regular cards (not alt, not ovn, not signed)
+        priority = (not is_alt, not is_ovn, not is_signed)
+
+        if rb_id not in deduplicated_cards:
+            deduplicated_cards[rb_id] = (card, priority)
+        else:
+            _, existing_priority = deduplicated_cards[rb_id]
+            if priority > existing_priority:
+                deduplicated_cards[rb_id] = (card, priority)
+
     all_cards_clean = []
-    for card in tqdm(all_cards):
+    for rb_id in tqdm(deduplicated_cards):
+        card, _ = deduplicated_cards[rb_id]
         if len(card["classification"]["domain"])>1:
             d1 = card["classification"]["domain"][0]
             d2 = card["classification"]["domain"][1]
