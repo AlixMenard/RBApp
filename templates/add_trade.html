@@ -86,9 +86,9 @@
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4" id="cardGrid">
             {% for card in cards %}
             <div class="card-item bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-lg hover:shadow-orange-500/10 transition-all group">
-                <div class="relative aspect-[3/4]">
+                <div class="relative aspect-[3/4] overflow-hidden">
                     <img src="{{ card[4] }}" alt="{{ card[1] }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 {% if card[13] == 'Battlefield' %}landscape-rotate{% endif %}">
-                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900 to-transparent p-3">
+                    <div class="absolute z-10 bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900 to-transparent p-3">
                         <h3 class="text-slate-100 font-bold truncate text-sm">{{ card[1] }}</h3>
                     </div>
                 </div>
@@ -178,13 +178,13 @@ function triggerSearch() {
                         </div>`;
 
                     cardDiv.innerHTML = `
-                        <div class="relative aspect-[3/4]">
+                        <div class="relative aspect-[3/4] overflow-hidden">
                             <img src="${card.image_url}" alt="${card.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ${card.type === 'Battlefield' ? 'landscape-rotate' : ''}">
-                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900 to-transparent p-3">
+                            <div class="absolute z-10 bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900 to-transparent p-3">
                                 <h3 class="text-slate-100 font-bold truncate text-sm">${card.name}</h3>
                             </div>
                         </div>
-                        
+
                         <div class="bg-slate-900/50 p-2 text-[10px] space-y-1.5 border-b border-slate-700/50">
                             <div class="flex justify-between items-center text-slate-400 uppercase tracking-wider font-semibold">
                                 <span>${card.rarity}</span>
