@@ -23,7 +23,7 @@ def get_prices(group_id):
             df = pd.read_csv(resp)
         except pd.errors.EmptyDataError:
             return None
-    cols = ["productId" "marketPrice"]
+    cols = ["name", "productId", "marketPrice"]
     df = df[[c for c in cols if c in df.columns]]
     return df
 
@@ -35,9 +35,9 @@ def update_group_prices(group_id, set_name):
     updated_count = 0
     missed = []
     for _, row in df.iterrows():
-        product_id = row.get('productId')
+        product_id = str(row.get('productId'))
 
-        price = row.get('marketPrice')
+        price = float(row.get('marketPrice'))
         if pd.isna(price):
             continue
 
@@ -47,8 +47,9 @@ def update_group_prices(group_id, set_name):
         else:
             missed.append(row)
 
-    if missed:
-        print(missed)
+    """if missed:
+        print(len(missed), "/", len(df))
+        print(missed)"""
 
 def update_prices():
     for group in get_groups():

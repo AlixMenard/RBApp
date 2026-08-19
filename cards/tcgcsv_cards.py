@@ -65,7 +65,7 @@ def _build_card(product, group):
     riftbound_id = f"{set_code}-{number.replace('/', '-')}"
 
     return {
-        "id": product["productId"],
+        "id": str(product["productId"]),
         "riftbound_id": riftbound_id,
         "name": name,
         "metadata": {
