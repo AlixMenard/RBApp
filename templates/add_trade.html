@@ -10,7 +10,7 @@
         position: absolute;
         top: 12.5%;
         left: -16.66%;
-        object-fit: contain !important;
+        object-fit: cover !important;
     }
 
     .group:hover .landscape-rotate {
@@ -91,7 +91,10 @@
             {% for card in cards %}
             <div class="card-item bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-lg hover:shadow-orange-500/10 transition-all group">
                 <div class="relative aspect-[3/4] overflow-hidden">
-                    <img src="{{ card[4] }}" alt="{{ card[1] }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 {% if card[13] == 'Battlefield' %}landscape-rotate{% endif %}">
+                    <img src="{{ card[4] }}"
+                         alt="{{ card[1] }}"
+                         onload="if(this.naturalWidth <= this.naturalHeight) this.classList.remove('landscape-rotate');"
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 {% if card[13] == 'Battlefield' %}landscape-rotate{% endif %}">
                     <div class="absolute z-10 bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900 to-transparent p-3">
                         <h3 class="text-slate-100 font-bold truncate text-sm">{{ card[1] }}</h3>
                     </div>
@@ -183,7 +186,10 @@ function triggerSearch() {
 
                     cardDiv.innerHTML = `
                         <div class="relative aspect-[3/4] overflow-hidden">
-                            <img src="${card.image_url}" alt="${card.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ${card.type === 'Battlefield' ? 'landscape-rotate' : ''}">
+                            <img src="${card.image_url}"
+                                 alt="${card.name}"
+                                 onload="if(this.naturalWidth <= this.naturalHeight) this.classList.remove('landscape-rotate');"
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ${card.type === 'Battlefield' ? 'landscape-rotate' : ''}">
                             <div class="absolute z-10 bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900 to-transparent p-3">
                                 <h3 class="text-slate-100 font-bold truncate text-sm">${card.name}</h3>
                             </div>
