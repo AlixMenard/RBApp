@@ -11,14 +11,14 @@ def get_cards():
     page_size = 100
 
     url = "/cards"
-    sort = "collector_number"
+    sort = "name"
     dir = 1
 
     all_cards = []
 
     with tqdm() as pbar:
         while True:
-            full_url = f"{base_url}{url}?sort={sort}&dir={dir}&page={page_number}&size={page_size}"
+            full_url = f"{base_url}{url}?dir={dir}&page={page_number}&size={page_size}" #sort={sort}&
             response = requests.get(full_url)
             response.raise_for_status()  # Check for HTTP errors
 
@@ -34,5 +34,5 @@ def get_cards():
             page_number += 1
             pbar.update(len(cards))
 
-    print("Done;")
+    print("Done;", len(all_cards))
     return all_cards

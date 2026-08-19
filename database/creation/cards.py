@@ -8,7 +8,7 @@ def init_cards():
         """
         CREATE TABLE IF NOT EXISTS cards (
             id TEXT PRIMARY KEY,
-            riftbound_id TEXT UNIQUE,
+            riftbound_id TEXT NOT NULL,
             name TEXT NOT NULL,
             clean_name TEXT,
             energy INTEGER,
@@ -22,7 +22,6 @@ def init_cards():
             set_id TEXT NOT NULL,
             set_name TEXT NOT NULL,
             image_url TEXT NOT NULL,
-            artist TEXT NOT NULL,
             alt BOOLEAN NOT NULL,
             ovn BOOLEAN NOT NULL,
             signed BOOLEAN NOT NULL,

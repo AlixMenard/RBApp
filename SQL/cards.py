@@ -22,8 +22,8 @@ def add_cards(cards: list) -> None:
             cursor.execute(
                 """INSERT INTO cards (id, riftbound_id, name, clean_name, energy,
                 power, might, type, supertype, rarity, domain1, domain2, set_id,
-                set_name, image_url, artist, alt, ovn, signed, price)
-                   VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                set_name, image_url, alt, ovn, signed, price)
+                   VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
                 card
             )
 
@@ -109,16 +109,13 @@ def search_cards(query):
         cards = cursor.fetchall()
     return cards
 
-def update_card_price(clean_name, energy, power, might, alt, ovn, signed, price, set_name):
+def update_card_price(id, price):
     with sqlite3.connect('database/app.db') as conn:
         cursor = conn.cursor()
         cursor.execute("""
             UPDATE cards 
             SET price = ? 
-            WHERE clean_name LIKE ?
-              AND energy IS ? AND power IS ? AND might IS ? 
-              AND alt = ? AND ovn = ? AND signed = ?
-              AND set_name = ?
-        """, (price, clean_name, energy, power, might, int(alt), int(ovn), int(signed), set_name))
+            WHERE id = ?
+        """, (price, id))
         conn.commit()
         return cursor.rowcount

@@ -1,44 +1,39 @@
-from cards.riftcodex_api import get_cards
+from cards.tcgcsv_cards import get_cards
 from SQL.tables import delete_table
 from SQL.cards import add_cards, add_tags
 from database.creation.cards import init_cards
 
-import re
 from tqdm import tqdm
-
-
-def normalize_clean_name(name):
-    text = name.replace("'", "").replace(",", "")
-    text = text.replace("(", "").replace(")", "")
-    text = text.replace("-", " ")
-    return re.sub(r"\s+", " ", text).strip()
+from collections import Counter
 
 def update_cards():
 
-    delete_table("card_tags")
-    delete_table("tags")
     delete_table("cards")
     init_cards()
 
     all_cards = get_cards()
 
-    deduplicated_cards = {}
+    # Deduplicate cards sharing the same riftbound_id, keeping the most recently updated one
+    latest_cards = {}
     for card in all_cards:
-        rb_id = card.get("riftbound_id")
-        if not rb_id:
+        rbid = card["riftbound_id"]
+        updated_on = (card.get("metadata") or {}).get("updated_on")
+
+        existing = latest_cards.get(rbid)
+        if existing is None:
+            latest_cards[rbid] = card
             continue
 
-        metadata = card.get("metadata") or {}
-        is_alt = metadata.get("alternate_art") or False
-        is_ovn = metadata.get("overnumbered") or False
-        is_signed = metadata.get("signature") or False
+        existing_updated_on = (existing.get("metadata") or {}).get("updated_on")
 
-        key = (rb_id, is_alt, is_ovn, is_signed)
-        deduplicated_cards.setdefault(key, card)
+        # Keep whichever has a later updated_on; cards missing the field lose to any that have it
+        if updated_on and (not existing_updated_on or updated_on > existing_updated_on):
+            latest_cards[rbid] = card
+
+    all_cards = list(latest_cards.values())
 
     all_cards_clean = []
-    for key in tqdm(deduplicated_cards):
-        card = deduplicated_cards[key]
+    for card in tqdm(all_cards):
         if len(card["classification"]["domain"])>1:
             d1 = card["classification"]["domain"][0]
             d2 = card["classification"]["domain"][1]
@@ -49,15 +44,13 @@ def update_cards():
         metadata = card.get("metadata") or {}
         attributes = card.get("attributes") or {}
 
-        clean_name = metadata.get("clean_name") or normalize_clean_name(card["name"])
-
-        card_clean = (card["id"], card["riftbound_id"], card["name"], clean_name,
+        card_clean = (card["id"], card["riftbound_id"], card["name"], metadata.get("clean_name") or card["name"],
                       attributes.get("energy") or 0, attributes.get("power") or 0,
                       attributes.get("might") or 0, card["classification"]["type"],
                       card["classification"]["supertype"], card["classification"]["rarity"],
                       d1, d2, card["set"]["set_id"], card["set"]["label"],
-                      card["media"]["image_url"], card["media"]["artist"],
-                      metadata.get("alternate_art") or False, (metadata.get("overnumbered") or False) or (metadata.get("signature") or False),
+                      card["media"]["image_url"], metadata.get("alternate_art") or False,
+                      (metadata.get("overnumbered") or False) or (metadata.get("signature") or False),
                       metadata.get("signature") or False,
                       0)
         tags = card["tags"]
@@ -76,5 +69,12 @@ def update_cards():
         tags = [tags_dict[t] for t in tags]
 
         all_cards_clean[i] = (card, tags)
+
+    # Sanity check: should print nothing now that duplicates are deduped above
+    rbids = [card[0][1] for card in all_cards_clean]
+    counts = Counter(rbids)
+    for rbid, count in counts.items():
+        if count > 1:
+            print(rbid, count)
 
     add_cards(all_cards_clean)
