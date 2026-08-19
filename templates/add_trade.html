@@ -1,6 +1,18 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    .landscape-rotate {
+        transform: rotate(90deg);
+        transform-origin: center;
+        width: 133.33% !important;
+        height: 75% !important;
+        position: absolute;
+        top: 12.5%;
+        left: -16.66%;
+        object-fit: contain !important;
+    }
+</style>
 <div class="space-y-6">
     <div class="flex justify-between items-center">
         <h2 class="text-3xl font-bold text-orange-600">Add Cards to Trade</h2>
@@ -75,7 +87,7 @@
             {% for card in cards %}
             <div class="card-item bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-lg hover:shadow-orange-500/10 transition-all group">
                 <div class="relative aspect-[3/4]">
-                    <img src="{{ card[4] }}" alt="{{ card[1] }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    <img src="{{ card[4] }}" alt="{{ card[1] }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 {% if card[13] == 'Battlefield' %}landscape-rotate{% endif %}">
                     <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900 to-transparent p-3">
                         <h3 class="text-slate-100 font-bold truncate text-sm">{{ card[1] }}</h3>
                     </div>
@@ -167,7 +179,7 @@ function triggerSearch() {
 
                     cardDiv.innerHTML = `
                         <div class="relative aspect-[3/4]">
-                            <img src="${card.image_url}" alt="${card.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                            <img src="${card.image_url}" alt="${card.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ${card.type === 'Battlefield' ? 'landscape-rotate' : ''}">
                             <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900 to-transparent p-3">
                                 <h3 class="text-slate-100 font-bold truncate text-sm">${card.name}</h3>
                             </div>

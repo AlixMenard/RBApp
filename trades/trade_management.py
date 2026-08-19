@@ -83,7 +83,8 @@ def search_cards_route():
             "signed": bool(card[9]),
             "tags": card[10].split(",") if card[10] else [],
             "price": card[11],
-            "set_name": card[12]
+            "set_name": card[12],
+            "type": card[13]
         })
     return jsonify(card_list)
 

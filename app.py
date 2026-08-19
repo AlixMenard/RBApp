@@ -29,6 +29,9 @@ def serve_assets(filename):
 @app.before_request
 def make_session_permanent():
     session.permanent = True
+    if "discord_id" in session:
+        if get_id(session["discord_id"]) is None:
+            session.clear()
 
 @app.context_processor
 def inject_user_info():
@@ -46,13 +49,17 @@ app.register_blueprint(user_trade_bp, url_prefix="/user_trade")
 @app.route("/")
 def home():
     if "discord_id" in session:
-
         if not "user_id" in session:
             session["user_id"] = get_id(session["discord_id"])
 
         avatar_url = get_avatar(session["discord_id"])
         return render_template("home.html", avatar_url=avatar_url)
     return render_template("login.html")
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("home"))
 
 @app.route("/admin/updatecards")
 def updatecards():

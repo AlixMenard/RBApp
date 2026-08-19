@@ -36,9 +36,9 @@ def get_avatar(discord_id: str):
     """,
     (discord_id,)
     )
-    avatar_hash = cursor.fetchone()[0]
+    result = cursor.fetchone()
+    avatar_hash = result[0] if result else None
 
-    conn.commit()
     conn.close()
 
     return get_avatar_url(discord_id, avatar_hash)
@@ -56,7 +56,10 @@ def get_id(discord_id: str):
     """,
     (discord_id,)
     )
-    user_id = cursor.fetchone()[0]
+
+    user_id = cursor.fetchone()
+    if user_id:
+        user_id = user_id[0]
 
     conn.commit()
     conn.close()
@@ -76,9 +79,9 @@ def get_discord_id(user_id: str):
     """,
     (user_id,)
     )
-    discord_id = cursor.fetchone()[0]
+    result = cursor.fetchone()
+    discord_id = result[0] if result else None
 
-    conn.commit()
     conn.close()
 
     return discord_id

@@ -3,3 +3,4 @@ flask
 requests
 tqdm
 APScheduler
+pandas

@@ -94,7 +94,7 @@ def search_cards(query):
         sql = """
             SELECT c.id, c.name, c.clean_name, c.rarity, c.image_url, 
                    c.domain1, c.domain2, c.alt, c.ovn, c.signed,
-                   GROUP_CONCAT(DISTINCT t.name) as tags, c.price, c.set_name
+                   GROUP_CONCAT(DISTINCT t.name) as tags, c.price, c.set_name, c.type
             FROM cards c
             LEFT JOIN card_tags ct ON c.id = ct.card_id
             LEFT JOIN tags t ON ct.tag_id = t.id
@@ -108,3 +108,17 @@ def search_cards(query):
         cursor.execute(sql, params)
         cards = cursor.fetchall()
     return cards
+
+def update_card_price(clean_name, energy, power, might, alt, ovn, signed, price, set_name):
+    with sqlite3.connect('database/app.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            UPDATE cards 
+            SET price = ? 
+            WHERE clean_name LIKE ?
+              AND energy IS ? AND power IS ? AND might IS ? 
+              AND alt = ? AND ovn = ? AND signed = ?
+              AND set_name = ?
+        """, (price, clean_name, energy, power, might, int(alt), int(ovn), int(signed), set_name))
+        conn.commit()
+        return cursor.rowcount
