@@ -41,7 +41,7 @@ def get_trades_in():
     cursor = conn.cursor()
     cursor.execute("""
     SELECT t.card_id, t.user_id, t.quantity, t.buy, t.trade, 
-           c.clean_name, c.image_url, 
+           c.name, c.image_url, 
            u.username, u.avatar, u.discord_id, c.type
     FROM trades_in t
     JOIN cards c ON t.card_id = c.id
@@ -56,7 +56,7 @@ def get_trades_out():
     cursor = conn.cursor()
     cursor.execute("""
     SELECT t.card_id, t.user_id, t.quantity, t.sell, t.trade, 
-           c.clean_name, c.image_url, 
+           c.name, c.image_url, 
            u.username, u.avatar, u.discord_id, c.type
     FROM trades_out t
     JOIN cards c ON t.card_id = c.id
@@ -65,11 +65,12 @@ def get_trades_out():
     result = cursor.fetchall()
     conn.close()
     return result
+
 def get_user_trades_out(user_id):
     conn = sqlite3.connect("database/app.db")
     cursor = conn.cursor()
     cursor.execute("""
-    SELECT t.card_id, t.quantity, t.sell, t.trade, c.clean_name, c.image_url, c.type
+    SELECT t.card_id, t.quantity, t.sell, t.trade, c.name, c.image_url, c.type
     FROM trades_out t
     JOIN cards c ON t.card_id = c.id
     WHERE t.user_id = ?
@@ -82,7 +83,7 @@ def get_user_trades_in(user_id):
     conn = sqlite3.connect("database/app.db")
     cursor = conn.cursor()
     cursor.execute("""
-    SELECT t.card_id, t.quantity, t.buy, t.trade, c.clean_name, c.image_url, c.type
+    SELECT t.card_id, t.quantity, t.buy, t.trade, c.name, c.image_url, c.type
     FROM trades_in t
     JOIN cards c ON t.card_id = c.id
     WHERE t.user_id = ?
