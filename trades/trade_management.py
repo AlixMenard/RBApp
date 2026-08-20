@@ -3,6 +3,7 @@ from SQL.trades import add_trade_out, add_trade_in, get_trades_in, get_trades_ou
 from SQL.cards import get_cards, search_cards, get_sets
 from SQL.user_data import get_avatar_url
 from collections import defaultdict
+from datetime import timedelta, datetime
 
 from Discord.DM import DM
 from SQL.user_data import get_discord_id, get_name
@@ -99,7 +100,9 @@ def add_trade_page():
     sets = get_sets()
     return render_template("add_trade.html", cards=cards, sets=sets)
 
+match_memory = {}
 def find_matches():
+    global match_memory
     trades_in = get_trades_in()
     trades_out = get_trades_out()
 
@@ -125,7 +128,9 @@ def find_matches():
             except (ValueError, TypeError):
                 in_quantity = 0
 
-            if (t:=(trade and trade_in[-1])) or (m:=(sell and trade_in[-2])):
+            t = trade and trade_in[-1]
+            m = sell and trade_in[-2]
+            if t or m:
                 matches.append((card_id, user_id, trade_in[1], min(quantity, in_quantity), m, t))
 
     for match in matches:
@@ -134,7 +139,16 @@ def find_matches():
             continue
         receiver_id, receiver_name = get_discord_id(receiver), get_name(receiver)
         giver_id, giver_name = get_discord_id(giver), get_name(giver)
-        DM(giver_id, giver_name, receiver_id, receiver_name)
+
+        memory_key = (receiver, giver)
+        memory_value = datetime.now()
+
+        if not memory_key in match_memory or (memory_value - match_memory[memory_key]).days > 2:
+            match_memory[memory_key] = memory_value
+            print(f"Sending DM to {receiver_name} ({receiver_id}) about {giver_name} ({giver_id})")
+            DM(giver_id, giver_name, receiver_id, receiver_name)
+
+
 
     return matches
 
