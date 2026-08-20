@@ -92,7 +92,7 @@ def get_name(user_id: str):
 
     cursor.execute(
         """
-        SELECT name
+        SELECT username
         FROM users
         WHERE id = (?)
     """,
