@@ -106,6 +106,9 @@ def find_matches():
     trades_in = get_trades_in()
     trades_out = get_trades_out()
 
+    print(trades_in)
+    print(trades_out)
+
     cards_in = defaultdict(list)
     for trade in trades_in:
         cards_in[trade[0]].append(trade)
@@ -147,8 +150,6 @@ def find_matches():
             match_memory[memory_key] = memory_value
             print(f"Sending DM to {receiver_name} ({receiver_id}) about {giver_name} ({giver_id})")
             DM(giver_id, giver_name, receiver_id, receiver_name)
-
-
 
     return matches
 

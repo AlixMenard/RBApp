@@ -20,7 +20,7 @@ scheduler = BackgroundScheduler()
 
 cards_trigger = CronTrigger(day_of_week="mon", hour="2", minute="0", second="0")
 prices_trigger = CronTrigger(year="*", month="*", day="*", hour="3", minute="0", second="0")
-scheduler.add_job(find_matches, 'interval', minutes=120)
+scheduler.add_job(find_matches, 'interval', minutes=2)
 scheduler.add_job(update_cards, trigger=cards_trigger)
 scheduler.add_job(update_prices, trigger=prices_trigger)
 
