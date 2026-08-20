@@ -105,10 +105,6 @@ def find_matches():
     global match_memory
     trades_in = get_trades_in()
     trades_out = get_trades_out()
-
-    print(trades_in)
-    print(trades_out)
-
     cards_in = defaultdict(list)
     for trade in trades_in:
         cards_in[trade[0]].append(trade)

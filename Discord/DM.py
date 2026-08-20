@@ -23,7 +23,8 @@ def DM(giver_id: str, giver: str, receiver_id: str, receiver: str):
         channel_id = response.json()["id"]
         message_url = f"https://discord.com/api/v10/channels/{channel_id}/messages"
         message_data = {"content": msg_giver}
-        requests.post(message_url, headers=headers, json=message_data)
+        response = requests.post(message_url, headers=headers, json=message_data)
+        print(response.json())
 
     dm_data_receiver = {"recipient_id": receiver_id}
     response = requests.post(dm_url, headers=headers, json=dm_data_receiver)
@@ -31,4 +32,5 @@ def DM(giver_id: str, giver: str, receiver_id: str, receiver: str):
         channel_id = response.json()["id"]
         message_url = f"https://discord.com/api/v10/channels/{channel_id}/messages"
         message_data = {"content": msg_receiver}
-        requests.post(message_url, headers=headers, json=message_data)
+        response = requests.post(message_url, headers=headers, json=message_data)
+        print(response.json())
