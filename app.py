@@ -8,6 +8,7 @@ import sqlite3
 load_dotenv()
 
 from Discord.OAuth import auth_bp
+from Discord.DM import DM
 from trades.trade_management import trade_bp, find_matches
 from trades.user_trades import user_trade_bp
 from cards.card_list import update_cards

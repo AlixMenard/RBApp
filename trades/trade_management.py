@@ -3,7 +3,9 @@ from SQL.trades import add_trade_out, add_trade_in, get_trades_in, get_trades_ou
 from SQL.cards import get_cards, search_cards, get_sets
 from SQL.user_data import get_avatar_url
 from collections import defaultdict
-from apscheduler.schedulers.background import BackgroundScheduler
+
+from Discord.DM import DM
+from SQL.user_data import get_discord_id, get_name
 
 trade_bp = Blueprint("trade", __name__)
 
@@ -126,6 +128,14 @@ def find_matches():
             if (t:=(trade and trade_in[-1])) or (m:=(sell and trade_in[-2])):
                 matches.append((card_id, user_id, trade_in[1], min(quantity, in_quantity), m, t))
 
+    for match in matches:
+        receiver, giver = match[2], match[1]
+        if receiver == giver:
+            continue
+        receiver_id, receiver_name = get_discord_id(receiver), get_name(receiver)
+        giver_id, giver_name = get_discord_id(giver), get_name(giver)
+        DM(giver_id, giver_name, receiver_id, receiver_name)
+
     return matches
 
 @trade_bp.route("/market/out")
@@ -166,10 +176,6 @@ def market_in():
                            trades=others_trades, 
                            title="Cards Others Want", 
                            action_label="Buy")
-
-scheduler = BackgroundScheduler()
-scheduler.add_job(find_matches, 'interval', minutes=120)
-scheduler.start()
 
 
 

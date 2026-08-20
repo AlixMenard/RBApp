@@ -86,6 +86,25 @@ def get_discord_id(user_id: str):
 
     return discord_id
 
+def get_name(user_id: str):
+    conn = sqlite3.connect("database/app.db")
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        SELECT name
+        FROM users
+        WHERE id = (?)
+    """,
+    (user_id,)
+    )
+    result = cursor.fetchone()
+    name = result[0] if result else None
+
+    conn.close()
+
+    return name
+
 def get_avatar_url(discord_id: str, avatar_hash: str) -> str:
     if avatar_hash:
         extension = "gif" if avatar_hash.startswith("a_") else "png"
