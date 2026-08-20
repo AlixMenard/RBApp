@@ -11,10 +11,18 @@ from Discord.OAuth import auth_bp
 from trades.trade_management import trade_bp, find_matches
 from trades.user_trades import user_trade_bp
 from cards.card_list import update_cards
+from cards.prices import update_prices
 
 from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.cron import CronTrigger
 scheduler = BackgroundScheduler()
+
+cards_trigger = CronTrigger(day_of_week="mon", hour="2", minute="0", second="0")
+prices_trigger = CronTrigger(year="*", month="*", day="*", hour="3", minute="0", second="0")
 scheduler.add_job(find_matches, 'interval', minutes=120)
+scheduler.add_job(update_cards, trigger=cards_trigger)
+scheduler.add_job(update_prices, trigger=prices_trigger)
+
 scheduler.start()
 
 
@@ -39,7 +47,8 @@ def inject_user_info():
         return dict(avatar_url=get_avatar(session["discord_id"]))
     return dict(avatar_url=None)
 
-# Register the blueprint with a prefix (e.g. /auth/login, /auth/callback)
+
+
 app.register_blueprint(auth_bp, url_prefix="/auth")
 app.register_blueprint(trade_bp, url_prefix="/trade")
 app.register_blueprint(user_trade_bp, url_prefix="/user_trade")
