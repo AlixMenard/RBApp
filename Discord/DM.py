@@ -15,7 +15,7 @@ def DM(giver_id: str, giver: str, receiver_id: str, receiver: str):
         "Content-Type": "application/json"
     }
 
-    dm_url = "https://discord.com/api/v10/users/@me/channels"
+    dm_url = "https://discord.com/api/v10/users/@me/channels"#
 
     dm_data_giver = {"recipient_id": giver_id}
     response = requests.post(dm_url, headers=headers, json=dm_data_giver)
