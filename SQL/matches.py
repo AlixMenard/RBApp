@@ -10,6 +10,7 @@ def update_matches(matches: list):
     cursor = conn.cursor()
 
     for match in matches:
+        print(match)
         cursor.executemany("INSERT INTO matches VALUES (?, ?, ?, ?, ?, ?)", match)
 
     conn.commit()
