@@ -128,8 +128,8 @@ def find_matches():
             except (ValueError, TypeError):
                 in_quantity = 0
 
-            t = trade and trade_in[-1]
-            m = sell and trade_in[-2]
+            t = trade and trade_in[4]
+            m = sell and trade_in[3]
             if t or m:
                 matches.append((card_id, user_id, trade_in[1], min(quantity, in_quantity), m, t))
 
