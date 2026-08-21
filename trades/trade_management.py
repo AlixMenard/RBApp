@@ -1,6 +1,7 @@
 from flask import Blueprint, redirect, request, session, url_for, render_template, jsonify
 from SQL.trades import add_trade_out, add_trade_in, get_trades_in, get_trades_out, remove_trade_in, remove_trade_out
 from SQL.cards import get_cards, search_cards, get_sets
+from SQL.matches import update_matches
 from SQL.user_data import get_avatar_url
 from collections import defaultdict
 from datetime import timedelta, datetime
@@ -132,7 +133,9 @@ def find_matches():
             if t or m:
                 matches.append((card_id, user_id, trade_in[1], min(quantity, in_quantity), m, t))
 
-    for match in matches:
+    update_matches(matches)
+
+    """for match in matches:
         receiver, giver = match[2], match[1]
         if receiver == giver:
             continue
@@ -146,7 +149,7 @@ def find_matches():
         if last_sent is None or (now - last_sent).total_seconds() > 172800:
             match_memory[memory_key] = now
             print(f"Sending DM to {receiver_name} ({receiver_id}) about {giver_name} ({giver_id})")
-            DM(giver_id, giver_name, receiver_id, receiver_name)
+            DM(giver_id, giver_name, receiver_id, receiver_name)"""
 
     return matches
 
