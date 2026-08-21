@@ -13,7 +13,7 @@ def update_matches(matches: list):
         card_id, giver_id, receiver_id, quantity, money, trade = match
         for el in match:
             print(type(el), el)
-        cursor.executemany(
+        cursor.execute(
             """INSERT INTO matches (card_id, giver_id, receiver_id, quantity, money, trade)
             VALUES (?, ?, ?, ?, ?, ?)""",
                            (card_id, giver_id, receiver_id, quantity, money, trade,)
