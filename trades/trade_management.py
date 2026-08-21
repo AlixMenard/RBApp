@@ -123,6 +123,8 @@ def find_matches():
 
         potential = cards_in[card_id]
         for trade_in in potential:
+            if trade_in[1] == user_id:
+                continue
             try:
                 in_quantity = int(trade_in[2])
             except (ValueError, TypeError):

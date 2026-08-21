@@ -1,5 +1,6 @@
 from flask import Flask, session, redirect, url_for, request, render_template, send_from_directory
-from SQL.user_data import get_avatar, get_id
+from SQL.user_data import get_avatar, get_id, get_avatar_url
+from SQL.matches import get_user_matches
 from datetime import timedelta
 import os
 from dotenv import load_dotenv
@@ -70,6 +71,42 @@ def home():
 def logout():
     session.clear()
     return redirect(url_for("home"))
+
+@app.route("/matches")
+def matches():
+    if "discord_id" not in session or "user_id" not in session:
+        return redirect(url_for("home"))
+
+    user_id = session.get("user_id")
+    raw_matches = get_user_matches(user_id)
+
+    giving = []
+    receiving = []
+    for row in raw_matches:
+        (card_id, giver_id, receiver_id, quantity, money, trade,
+         card_name, image_url,
+         giver_username, giver_avatar_hash, giver_discord_id,
+         receiver_username, receiver_avatar_hash, receiver_discord_id) = row
+
+        entry = {
+            "card_id": card_id,
+            "card_name": card_name,
+            "image_url": image_url,
+            "quantity": quantity,
+            "money": bool(money),
+            "trade": bool(trade),
+            "giver_username": giver_username,
+            "giver_avatar": get_avatar_url(giver_discord_id, giver_avatar_hash),
+            "receiver_username": receiver_username,
+            "receiver_avatar": get_avatar_url(receiver_discord_id, receiver_avatar_hash),
+        }
+
+        if giver_id == user_id:
+            giving.append(entry)
+        if receiver_id == user_id:
+            receiving.append(entry)
+
+    return render_template("matches.html", giving=giving, receiving=receiving)
 
 @app.route("/admin/updatecards")
 def updatecards():
