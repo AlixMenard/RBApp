@@ -10,8 +10,13 @@ def update_matches(matches: list):
     cursor = conn.cursor()
 
     for match in matches:
-        print(match)
-        cursor.executemany("INSERT INTO matches VALUES (?, ?, ?, ?, ?, ?)", match)
+        card_id, giver_id, receiver_id, quantity, money, trade = match
+        money, trade = bool(money), bool(trade)
+        cursor.executemany(
+            """INSERT INTO matches (card_id, giver_id, receiver_id, quantity, money, trade)
+            VALUES (?, ?, ?, ?, ?, ?)""",
+                           (card_id, giver_id, receiver_id, quantity, money, trade,)
+            )
 
     conn.commit()
     conn.close()
