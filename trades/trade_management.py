@@ -144,7 +144,7 @@ def find_matches():
 
         last_sent = match_memory.get(memory_key)
         if last_sent is None or (now - last_sent).total_seconds() > 172800:
-            match_memory[memory_key] = memory_value
+            match_memory[memory_key] = now
             print(f"Sending DM to {receiver_name} ({receiver_id}) about {giver_name} ({giver_id})")
             DM(giver_id, giver_name, receiver_id, receiver_name)
 
