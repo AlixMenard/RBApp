@@ -66,5 +66,6 @@ def dm_status():
     if "discord_id" not in session or "user_id" not in session:
         return redirect(url_for("home"))
 
-    status = requests.args.get("status")
+    status = request.args.get("status", "false").lower() == "true"
     change_dm_status(session["user_id"], status)
+    return "success"

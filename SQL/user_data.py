@@ -123,15 +123,17 @@ def change_dm_status(user_id: str, status: bool):
         SET dm = ?
             WHERE id = ?
             """, (status, user_id))
+    conn.commit()
+    conn.close()
 
-def get_dm_status(user_id: str):
+def get_dm_status(discord_id: str):
     conn = sqlite3.connect("database/app.db")
     cursor = conn.cursor()
     cursor.execute("""
         SELECT dm
         FROM users
-        WHERE id = ?
-        """, (user_id,))
-    result = cursor.fetchone()[0]
+        WHERE discord_id = ?
+        """, (discord_id,))
+    result = cursor.fetchone()
     conn.close()
     return result[0]

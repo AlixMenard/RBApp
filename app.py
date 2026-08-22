@@ -1,5 +1,5 @@
 from flask import Flask, session, redirect, url_for, request, render_template, send_from_directory
-from SQL.user_data import get_avatar, get_id, get_avatar_url
+from SQL.user_data import get_avatar, get_id, get_avatar_url, get_dm_status
 from SQL.matches import get_user_matches
 from datetime import timedelta
 import os
@@ -46,8 +46,15 @@ def make_session_permanent():
 @app.context_processor
 def inject_user_info():
     if "discord_id" in session:
-        return dict(avatar_url=get_avatar(session["discord_id"]))
-    return dict(avatar_url=None)
+        user_id = session.get("user_id")
+        if user_id is None:
+            user_id = get_id(session["discord_id"])
+            session["user_id"] = user_id
+        return dict(
+            avatar_url=get_avatar(session["discord_id"]),
+            dm_status=get_dm_status(user_id) if user_id else False,
+        )
+    return dict(avatar_url=None, dm_status=False)
 
 
 
