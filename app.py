@@ -40,8 +40,11 @@ def serve_assets(filename):
 def make_session_permanent():
     session.permanent = True
     if "discord_id" in session:
-        if get_id(session["discord_id"]) is None:
+        current_id = get_id(session["discord_id"])
+        if current_id is None:
             session.clear()
+        else:
+            session["user_id"] = current_id  # always resync, don't trust a cached value
 
 @app.context_processor
 def inject_user_info():

@@ -129,11 +129,7 @@ def change_dm_status(user_id: str, status: bool):
 def get_dm_status(discord_id: str):
     conn = sqlite3.connect("database/app.db")
     cursor = conn.cursor()
-    cursor.execute("""
-        SELECT dm
-        FROM users
-        WHERE discord_id = ?
-        """, (discord_id,))
+    cursor.execute("SELECT dm FROM users WHERE discord_id = ?", (discord_id,))
     result = cursor.fetchone()
     conn.close()
-    return result[0]
+    return result[0] if result else False
