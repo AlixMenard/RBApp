@@ -137,7 +137,7 @@ def find_matches():
 
     update_matches(matches)
 
-    """for match in matches:
+    for match in matches:
         receiver, giver = match[2], match[1]
         if receiver == giver:
             continue
@@ -151,7 +151,7 @@ def find_matches():
         if last_sent is None or (now - last_sent).total_seconds() > 172800:
             match_memory[memory_key] = now
             print(f"Sending DM to {receiver_name} ({receiver_id}) about {giver_name} ({giver_id})")
-            DM(giver_id, giver_name, receiver_id, receiver_name)"""
+            DM(giver_id, giver_name, receiver_id, receiver_name)
 
     return matches
 

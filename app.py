@@ -47,12 +47,13 @@ def make_session_permanent():
 def inject_user_info():
     if "discord_id" in session:
         user_id = session.get("user_id")
+        discord_id = session["discord_id"]
         if user_id is None:
             user_id = get_id(session["discord_id"])
             session["user_id"] = user_id
         return dict(
             avatar_url=get_avatar(session["discord_id"]),
-            dm_status=get_dm_status(user_id) if user_id else False,
+            dm_status=get_dm_status(discord_id) if discord_id else False,
         )
     return dict(avatar_url=None, dm_status=False)
 
