@@ -3,7 +3,7 @@ from flask import Blueprint, redirect, request, session, url_for
 import requests
 from dotenv import load_dotenv
 import os
-from SQL.user_data import save_or_update_user
+from SQL.user_data import save_or_update_user, change_dm_status
 
 load_dotenv()
 
@@ -60,3 +60,11 @@ def callback():
     session["discord_name"] = user_data["username"]
 
     return redirect(url_for("home"))
+
+@auth_bp.route("/dm_status")
+def dm_status():
+    if "discord_id" not in session or "user_id" not in session:
+        return redirect(url_for("home"))
+
+    status = requests.args.get("status")
+    change_dm_status(session["user_id"], status)

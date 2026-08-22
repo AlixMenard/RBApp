@@ -15,6 +15,7 @@ def init_users():
             global_name TEXT,
             nickname TEXT,
             avatar TEXT,
+            dm BOOLEAN NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """

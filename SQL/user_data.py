@@ -5,8 +5,8 @@ def save_or_update_user(discord_user):
     cursor = conn.cursor()
     cursor.execute(
         """
-        INSERT INTO users (discord_id, username, global_name, nickname, avatar)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO users (discord_id, username, global_name, nickname, avatar, dm)
+        VALUES (?, ?, ?, ?, ?, ?)
         ON CONFLICT(discord_id) DO UPDATE SET
             username = excluded.username,
             global_name = excluded.global_name,
@@ -18,6 +18,7 @@ def save_or_update_user(discord_user):
             discord_user.get("global_name", ""),
             discord_user.get("global_name", ""),
             discord_user.get("avatar", ""),
+            False,
         ),
     )
     conn.commit()
@@ -112,3 +113,25 @@ def get_avatar_url(discord_id: str, avatar_hash: str) -> str:
     
     default_avatar_index = (int(discord_id) >> 22) % 6
     return f"https://cdn.discordapp.com/embed/avatars/{default_avatar_index}.png"
+
+def change_dm_status(user_id: str, status: bool):
+    conn = sqlite3.connect("database/app.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE users
+        SET dm = ?
+            WHERE id = ?
+            """, (status, user_id))
+
+def get_dm_status(user_id: str):
+    conn = sqlite3.connect("database/app.db")
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT dm
+        FROM users
+        WHERE id = ?
+        """, (user_id,))
+    result = cursor.fetchone()[0]
+    conn.close()
+    return result[0]
