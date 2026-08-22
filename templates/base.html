@@ -1,55 +1,70 @@
-<nav class="bg-slate-900 border-b border-slate-800 p-4 flex justify-between items-center">
-    <div class="flex items-center space-x-4">
-        {% if session.get('discord_id') %}
-        <img src="{{ avatar_url }}" alt="Avatar" class="w-10 h-10 rounded-full border border-slate-700 shadow-sm shadow-cyan-500/20">
-        <span class="font-bold text-slate-100">{{ session.get('discord_name') }}</span>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riftbound Brussels - Trading</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen">
+    <nav class="bg-slate-900 border-b border-slate-800 p-4 flex justify-between items-center">
+        <div class="flex items-center space-x-4">
+            {% if session.get('discord_id') %}
+            <img src="{{ avatar_url }}" alt="Avatar" class="w-10 h-10 rounded-full border border-slate-700 shadow-sm shadow-cyan-500/20">
+            <span class="font-bold text-slate-100">{{ session.get('discord_name') }}</span>
 
-        <div class="flex items-center space-x-2 ml-4 pl-4 border-l border-slate-800">
-            <span class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Match Alerts</span>
-            <button id="dmToggleBtn"
-                data-active="{{ 'true' if dm_status else 'false' }}"
-                class="toggle-btn px-3 py-1 rounded-lg border text-xs font-bold transition-all duration-200 {{ 'bg-green-900/40 border-green-500/50 text-green-400' if dm_status else 'bg-slate-800 border-slate-700 text-slate-500' }}">
-                {{ 'On' if dm_status else 'Off' }}
-            </button>
-            <div class="group relative inline-block text-xs text-slate-500 cursor-help">
-                <span class="w-4 h-4 rounded-full border border-slate-600 flex items-center justify-center text-[10px]">?</span>
-                <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 p-3 bg-slate-800 border border-slate-700 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200 text-left z-10">
-                    <p class="text-slate-300">When on, our bot will send you a <span class="text-orange-400">Discord DM</span> whenever a trade match is found for you. Turn it off if you'd rather just check the <span class="text-orange-400">Matches</span> page yourself.</p>
-                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 border-8 border-transparent border-b-slate-800"></div>
+            <div class="flex items-center space-x-2 ml-4 pl-4 border-l border-slate-800">
+                <span class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Match Alerts</span>
+                <button id="dmToggleBtn"
+                    data-active="{{ 'true' if dm_status else 'false' }}"
+                    class="toggle-btn px-3 py-1 rounded-lg border text-xs font-bold transition-all duration-200 {{ 'bg-green-900/40 border-green-500/50 text-green-400' if dm_status else 'bg-slate-800 border-slate-700 text-slate-500' }}">
+                    {{ 'On' if dm_status else 'Off' }}
+                </button>
+                <div class="group relative inline-block text-xs text-slate-500 cursor-help">
+                    <span class="w-4 h-4 rounded-full border border-slate-600 flex items-center justify-center text-[10px]">?</span>
+                    <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 p-3 bg-slate-800 border border-slate-700 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200 text-left z-10">
+                        <p class="text-slate-300">When on, our bot will send you a <span class="text-orange-400">Discord DM</span> whenever a trade match is found for you. Turn it off if you'd rather just check the <span class="text-orange-400">Matches</span> page yourself.</p>
+                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 border-8 border-transparent border-b-slate-800"></div>
+                    </div>
                 </div>
             </div>
+            {% endif %}
+            <a href="/" class="text-orange-600 hover:text-orange-500 font-semibold ml-4 transition-colors">Home</a>
         </div>
-        {% endif %}
-        <a href="/" class="text-orange-600 hover:text-orange-500 font-semibold ml-4 transition-colors">Home</a>
-    </div>
-    <div>
-        <h1 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-amber-700">Riftbound Brussels</h1>
-    </div>
-</nav>
+        <div>
+            <h1 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-amber-700">Riftbound Brussels</h1>
+        </div>
+    </nav>
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const dmBtn = document.getElementById('dmToggleBtn');
-    if (!dmBtn) return;
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const dmBtn = document.getElementById('dmToggleBtn');
+        if (!dmBtn) return;
 
-    dmBtn.addEventListener('click', function () {
-        const isActive = this.getAttribute('data-active') === 'true';
-        const newStatus = !isActive;
+        dmBtn.addEventListener('click', function () {
+            const isActive = this.getAttribute('data-active') === 'true';
+            const newStatus = !isActive;
 
-        fetch(`/auth/dm_status?status=${newStatus}`).then(response => {
-            if (response.ok) {
-                this.setAttribute('data-active', String(newStatus));
-                if (newStatus) {
-                    this.className = this.className.replace('bg-slate-800 border-slate-700 text-slate-500', 'bg-green-900/40 border-green-500/50 text-green-400');
-                    this.innerText = 'On';
+            fetch(`/auth/dm_status?status=${newStatus}`).then(response => {
+                if (response.ok) {
+                    this.setAttribute('data-active', String(newStatus));
+                    if (newStatus) {
+                        this.className = this.className.replace('bg-slate-800 border-slate-700 text-slate-500', 'bg-green-900/40 border-green-500/50 text-green-400');
+                        this.innerText = 'On';
+                    } else {
+                        this.className = this.className.replace('bg-green-900/40 border-green-500/50 text-green-400', 'bg-slate-800 border-slate-700 text-slate-500');
+                        this.innerText = 'Off';
+                    }
                 } else {
-                    this.className = this.className.replace('bg-green-900/40 border-green-500/50 text-green-400', 'bg-slate-800 border-slate-700 text-slate-500');
-                    this.innerText = 'Off';
+                    alert('Failed to update Match Alerts setting');
                 }
-            } else {
-                alert('Failed to update Match Alerts setting');
-            }
+            });
         });
     });
-});
-</script>
+    </script>
+
+    <main class="container mx-auto mt-8 px-4">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
