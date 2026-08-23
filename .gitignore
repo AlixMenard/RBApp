@@ -1,2 +1,3 @@
 .env
 *.pyc
+database/app.db
