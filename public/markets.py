@@ -5,7 +5,7 @@ from SQL.user_data import get_avatar_url
 public_market_bp = Blueprint("public_market", __name__)
 
 
-@public_market_bp.route("/in")
+@public_market_bp.route("/out")
 def market_out():
     all_trades = get_trades_out()
     others_trades = []
@@ -19,7 +19,7 @@ def market_out():
                            action_label="Sell")
 
 
-@trade_bp.route("/market/in")
+@public_market_bp.route("/in")
 def market_in():
     all_trades = get_trades_in()
     others_trades = []
