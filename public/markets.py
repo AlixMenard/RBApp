@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template
 from SQL.user_data import get_avatar_url
+from SQL.trades import get_trades_in, get_trades_out
 
 # Create a Blueprint instead of a Flask app
 public_market_bp = Blueprint("public_market", __name__)
