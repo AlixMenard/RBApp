@@ -9,9 +9,9 @@ import sqlite3
 load_dotenv()
 
 from Discord.OAuth import auth_bp
-from Discord.DM import DM
 from trades.trade_management import trade_bp, find_matches
 from trades.user_trades import user_trade_bp
+from public.markets import public_market_bp
 from cards.card_list import update_cards
 from cards.prices import update_prices
 
@@ -65,6 +65,7 @@ def inject_user_info():
 app.register_blueprint(auth_bp, url_prefix="/auth")
 app.register_blueprint(trade_bp, url_prefix="/trade")
 app.register_blueprint(user_trade_bp, url_prefix="/user_trade")
+app.register_blueprint(public_market_bp, url_prefix="/public_market")
 
 
 
