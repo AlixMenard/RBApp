@@ -12,6 +12,7 @@ def init_trades():
             quantity INTEGER NOT NULL,
             sell BOOLEAN NOT NULL,
             trade BOOLEAN NOT NULL,
+            date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (card_id, user_id)
         )
     """
@@ -25,6 +26,7 @@ def init_trades():
             quantity INTEGER NOT NULL,
             buy     BOOLEAN NOT NULL,
             trade    BOOLEAN NOT NULL,
+            date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (card_id, user_id)
         )
         """
